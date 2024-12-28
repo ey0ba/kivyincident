@@ -49,13 +49,17 @@ jobs:
         uses: ArtemSBulgakov/buildozer-action@v1
         id: buildozer
         with:
-          command: -v android debug
+          command: android debug --verbose
           buildozer_version: stable
+
+      - name: Debug Buildozer Logs
+        run: cat .buildozer/android/platform/build/build.log
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v3
         with:
           name: apk
           path: .buildozer/android/platform/build/dists/*/bin/*.apk
+
 
 
