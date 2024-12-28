@@ -36,10 +36,22 @@ jobs:
           export ANDROID_SDK_ROOT=$HOME/android-sdk
           yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses || true
 
+          # Install stable versions of SDK components
           $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager \
             "platform-tools" \
             "build-tools;33.0.0" \
             "platforms;android-33"
+
+      - name: Accept Licenses Manually
+        run: |
+          mkdir -p $HOME/android-sdk/licenses
+          echo -e "24333f8a63b6825ea9c5514f83c2829b004d1fee" > $HOME/android-sdk/licenses/android-sdk-license
+          echo -e "84831b9409646a918e30573bab4c9c91346d8abd" > $HOME/android-sdk/licenses/android-sdk-preview-license
+
+      - name: Debug Android SDK
+        run: |
+          ls $HOME/android-sdk/build-tools
+          ls $HOME/android-sdk/build-tools/33.0.0
 
       - name: Build with Buildozer
         run: |
