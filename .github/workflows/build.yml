@@ -36,12 +36,17 @@ jobs:
 
     - name: Set up Android SDK/NDK
       run: |
+        # Download and unzip the SDK command-line tools
         curl -s https://dl.google.com/android/repository/commandlinetools-linux-7583922_latest.zip -o cmdline-tools.zip
         unzip cmdline-tools.zip -d $HOME/android-sdk
         rm cmdline-tools.zip
-        yes | $HOME/android-sdk/cmdline-tools/bin/sdkmanager --licenses
-        # Installing necessary Android SDK components, including build tools, platforms, and AIDL
-        $HOME/android-sdk/cmdline-tools/bin/sdkmanager --sdk_root=$HOME/android-sdk "platform-tools" "build-tools;29.0.2" "platforms;android-29" "aidl"
+        
+        # Move the extracted cmdline-tools to the correct location
+        mv $HOME/android-sdk/cmdline-tools $HOME/android-sdk/cmdline-tools/latest
+        
+        # Accept the licenses and install necessary components
+        yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses
+        $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk "platform-tools" "build-tools;29.0.2" "platforms;android-29" "aidl"
 
     - name: Build APK with Buildozer
       run: |
@@ -54,4 +59,3 @@ jobs:
       with:
         name: android-apk
         path: ./bin/*.apk  # Make sure this matches the actual APK output path
-
