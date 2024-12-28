@@ -39,7 +39,7 @@ jobs:
           export ANDROID_SDK_ROOT=$HOME/android-sdk
           yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses || true
 
-          # Install stable versions of SDK components
+          # Explicitly install stable versions of build-tools
           $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager \
             "platform-tools" \
             "build-tools;33.0.0" \
@@ -79,4 +79,3 @@ jobs:
         with:
           name: apk
           path: .buildozer/android/platform/build/dists/*/bin/*.apk
-
