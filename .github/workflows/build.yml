@@ -7,16 +7,16 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04  # Use Ubuntu 22.04 for compatibility with Buildozer
+    runs-on: ubuntu-22.04
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4  # Use the latest version of the checkout action
+      uses: actions/checkout@v4
 
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: 3.8  # Make sure this is compatible with your project
+        python-version: 3.8
 
     - name: Install Buildozer and dependencies
       run: |
@@ -38,25 +38,30 @@ jobs:
       run: |
         # Create necessary directories
         mkdir -p $HOME/android-sdk/cmdline-tools
-        
+        cd $HOME/android-sdk/cmdline-tools
+
         # Download and unzip the SDK command-line tools
         curl -s https://dl.google.com/android/repository/commandlinetools-linux-8512546_latest.zip -o cmdline-tools.zip
-        unzip cmdline-tools.zip -d $HOME/android-sdk/cmdline-tools/
-        
+        unzip cmdline-tools.zip -d ./
+
+        # Fix directory structure
+        mv cmdline-tools/* .
+        rmdir cmdline-tools
+
         # Accept the licenses and install necessary components
-        yes | $HOME/android-sdk/cmdline-tools/tools/bin/sdkmanager --licenses
-        $HOME/android-sdk/cmdline-tools/tools/bin/sdkmanager --sdk_root=$HOME/android-sdk "platform-tools" "build-tools;29.0.2" "platforms;android-29" "aidl"
+        yes | ./bin/sdkmanager --licenses
+        ./bin/sdkmanager --sdk_root=$HOME/android-sdk "platform-tools" "build-tools;29.0.2" "platforms;android-29" "aidl"
 
     - name: Build APK with Buildozer
       run: |
-        buildozer android debug  # Replace with 'release' if you want a release build
+        buildozer android debug
       env:
-        HOME: $HOME  # Ensure Buildozer runs with the correct HOME directory
+        HOME: $HOME
 
     - name: Upload APK artifact
       uses: actions/upload-artifact@v4
       with:
         name: android-apk
-        path: ./bin/*.apk  # Make sure this matches the actual APK output path
+        path: ./bin/*.apk
 
 
