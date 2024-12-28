@@ -38,11 +38,7 @@ jobs:
       run: |
         # Download and unzip the SDK command-line tools
         curl -s https://dl.google.com/android/repository/commandlinetools-linux-7583922_latest.zip -o cmdline-tools.zip
-        unzip cmdline-tools.zip -d $HOME/android-sdk
-        rm cmdline-tools.zip
-        
-        # Move the extracted cmdline-tools to the correct location
-        mv $HOME/android-sdk/cmdline-tools $HOME/android-sdk/cmdline-tools/latest
+        unzip cmdline-tools.zip -d $HOME/android-sdk/cmdline-tools
         
         # Accept the licenses and install necessary components
         yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses
@@ -59,3 +55,4 @@ jobs:
       with:
         name: android-apk
         path: ./bin/*.apk  # Make sure this matches the actual APK output path
+
