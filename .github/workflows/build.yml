@@ -34,34 +34,33 @@ jobs:
         pip install --upgrade pip
         pip install buildozer kivy
 
-    - name: Set up Android SDK/NDK
+    - name: Set up Android SDK
       run: |
-        # Create necessary directories
         mkdir -p $HOME/android-sdk/cmdline-tools
         cd $HOME/android-sdk/cmdline-tools
 
-        # Download and unzip the SDK command-line tools
+        # Download Android command-line tools
         curl -s https://dl.google.com/android/repository/commandlinetools-linux-8512546_latest.zip -o cmdline-tools.zip
-        unzip cmdline-tools.zip -d ./
+        unzip cmdline-tools.zip -d ./latest
 
-        # Fix directory structure
-        mv cmdline-tools/* .
-        rmdir cmdline-tools
+        # Accept licenses and install components
+        yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses
+        $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager "platform-tools" "build-tools;33.0.0" "platforms;android-33"
 
-        # Accept the licenses and install necessary components
-        yes | ./bin/sdkmanager --licenses
-        ./bin/sdkmanager --sdk_root=$HOME/android-sdk "platform-tools" "build-tools;29.0.2" "platforms;android-29" "aidl"
+      env:
+        ANDROID_SDK_ROOT: $HOME/android-sdk
 
     - name: Build APK with Buildozer
       run: |
         buildozer android debug
       env:
-        HOME: $HOME
+        ANDROID_SDK_ROOT: $HOME/android-sdk
 
     - name: Upload APK artifact
       uses: actions/upload-artifact@v4
       with:
         name: android-apk
         path: ./bin/*.apk
+
 
 
