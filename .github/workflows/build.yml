@@ -16,7 +16,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: 3.8  # Make sure this is compatible with your project.
+        python-version: 3.8  # Make sure this is compatible with your project
 
     - name: Install Buildozer and dependencies
       run: |
@@ -39,7 +39,7 @@ jobs:
         curl -s https://dl.google.com/android/repository/commandlinetools-linux-7583922_latest.zip -o cmdline-tools.zip
         unzip cmdline-tools.zip -d $HOME/android-sdk
         rm cmdline-tools.zip
-        yes | $HOME/android-sdk/cmdline-tools/bin/sdkmanager --sdk_root=$HOME/android-sdk --licenses
+        yes | $HOME/android-sdk/cmdline-tools/bin/sdkmanager --licenses
         # Installing necessary Android SDK components, including build tools, platforms, and AIDL
         $HOME/android-sdk/cmdline-tools/bin/sdkmanager --sdk_root=$HOME/android-sdk "platform-tools" "build-tools;29.0.2" "platforms;android-29" "aidl"
 
