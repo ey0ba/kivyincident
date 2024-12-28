@@ -36,9 +36,12 @@ jobs:
 
     - name: Set up Android SDK/NDK
       run: |
+        # Create the necessary directories
+        mkdir -p $HOME/android-sdk/cmdline-tools/latest
+        
         # Download and unzip the SDK command-line tools
         curl -s https://dl.google.com/android/repository/commandlinetools-linux-7583922_latest.zip -o cmdline-tools.zip
-        unzip cmdline-tools.zip -d $HOME/android-sdk/cmdline-tools
+        unzip cmdline-tools.zip -d $HOME/android-sdk/cmdline-tools/latest
         
         # Accept the licenses and install necessary components
         yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses
