@@ -33,28 +33,28 @@ jobs:
           mkdir -p $HOME/android-sdk/cmdline-tools
           cd $HOME/android-sdk/cmdline-tools
 
-          # Download Android command-line tools
           curl -sSL https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -o cmdline-tools.zip
           unzip cmdline-tools.zip
           mv cmdline-tools latest
           rm cmdline-tools.zip
 
-          # Set SDK root
           export ANDROID_SDK_ROOT=$HOME/android-sdk
+          yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses || true
 
-          # Accept licenses
-          yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses
-
-          # Install platform tools, build-tools, and platforms
           $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager \
             "platform-tools" \
             "build-tools;33.0.0" \
-            "build-tools;33.0.2" \
-            "build-tools;34.0.0" \
+            "build-tools;36.0.0-rc3" \
             "platforms;android-33"
 
-      - name: Debug AIDL Availability
-        run: ls $HOME/android-sdk/build-tools/33.0.0
+      - name: Accept Android SDK Licenses
+        run: |
+          mkdir -p $HOME/android-sdk/licenses
+          echo -e "24333f8a63b6825ea9c5514f83c2829b004d1fee" > $HOME/android-sdk/licenses/android-sdk-license
+          echo -e "84831b9409646a918e30573bab4c9c91346d8abd" > $HOME/android-sdk/licenses/android-sdk-preview-license
+
+      - name: Debug Build-Tools Folder
+        run: ls -l $HOME/android-sdk/build-tools
 
       - name: Build APK
         run: |
