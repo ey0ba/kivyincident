@@ -21,3 +21,6 @@ android.permissions = INTERNET,ACCESS_FINE_LOCATION,READ_EXTERNAL_STORAGE,WRITE_
 fullscreen = 0
 android.accept_sdk_license = True
 android.skip_update = True
+android.sdk_path = $HOME/android-sdk
+android.ndk_path = $HOME/.buildozer/android/platform/android-ndk-r21d
+
