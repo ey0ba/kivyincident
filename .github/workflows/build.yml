@@ -27,6 +27,7 @@ jobs:
           mkdir -p $HOME/android-sdk/cmdline-tools
           cd $HOME/android-sdk/cmdline-tools
 
+          # Download and install command-line tools
           curl -sSL https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -o cmdline-tools.zip
           unzip cmdline-tools.zip
           mv cmdline-tools latest
@@ -40,19 +41,13 @@ jobs:
             "build-tools;33.0.0" \
             "platforms;android-33"
 
-      - name: Set Environment Variables
+      - name: Build with Buildozer
         run: |
           export ANDROID_SDK_ROOT=$HOME/android-sdk
           export PATH=$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/platform-tools:$ANDROID_SDK_ROOT/build-tools/33.0.0:$PATH
+          buildozer -v android debug
 
-      - name: Build with Buildozer
-        uses: ArtemSBulgakov/buildozer-action@v1
-        id: buildozer
-        with:
-          command: android debug --verbose
-          buildozer_version: stable
-
-      - name: Debug Buildozer Logs
+      - name: Debug Build Logs
         run: cat .buildozer/android/platform/build/build.log
 
       - name: Upload Artifacts
@@ -60,6 +55,5 @@ jobs:
         with:
           name: apk
           path: .buildozer/android/platform/build/dists/*/bin/*.apk
-
 
 
