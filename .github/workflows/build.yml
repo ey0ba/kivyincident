@@ -9,9 +9,11 @@ jobs:
     runs-on: ubuntu-20.04
 
     steps:
+      # Step 1: Checkout the repository
       - name: Checkout Repository
         uses: actions/checkout@v3
 
+      # Step 2: Install System Dependencies
       - name: Install System Dependencies
         run: |
           sudo apt-get update
@@ -22,11 +24,13 @@ jobs:
           python3 -m pip install --upgrade pip
           pip install buildozer cython
 
-      - name: Install Android SDK and Tools
+      # Step 3: Install Android SDK and Tools
+      - name: Install Android SDK and Build Tools
         run: |
           mkdir -p $HOME/android-sdk/cmdline-tools
           cd $HOME/android-sdk/cmdline-tools
 
+          # Download and setup command-line tools
           curl -sSL https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -o cmdline-tools.zip
           unzip cmdline-tools.zip
           mv cmdline-tools latest
@@ -35,30 +39,44 @@ jobs:
           export ANDROID_SDK_ROOT=$HOME/android-sdk
           yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses || true
 
+          # Explicitly install stable versions of SDK components
           $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager \
             "platform-tools" \
             "build-tools;33.0.0" \
             "platforms;android-33"
 
-      - name: Debug Android SDK
+      # Step 4: Accept Licenses Manually (Fallback)
+      - name: Accept Licenses
+        run: |
+          mkdir -p $HOME/android-sdk/licenses
+          echo -e "24333f8a63b6825ea9c5514f83c2829b004d1fee" > $HOME/android-sdk/licenses/android-sdk-license
+          echo -e "84831b9409646a918e30573bab4c9c91346d8abd" > $HOME/android-sdk/licenses/android-sdk-preview-license
+
+      # Step 5: Debug Android SDK Installation
+      - name: Debug Android SDK Installation
         run: |
           ls -l $HOME/android-sdk/build-tools
           ls -l $HOME/android-sdk/build-tools/33.0.0
 
+      # Step 6: Set Environment Variables
       - name: Set Environment Variables
         run: |
           export ANDROID_SDK_ROOT=$HOME/android-sdk
           export PATH=$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/platform-tools:$ANDROID_SDK_ROOT/build-tools/33.0.0:$PATH
 
+      # Step 7: Build the APK with Buildozer
       - name: Build APK with Buildozer
         run: |
           buildozer -v android debug
 
+      # Step 8: Debug Build Logs (Optional)
       - name: Debug Build Logs
         run: cat .buildozer/android/platform/build/build.log
 
+      # Step 9: Upload APK Artifact
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v3
         with:
           name: apk
           path: .buildozer/android/platform/build/dists/*/bin/*.apk
+
