@@ -1,69 +1,51 @@
-name: Build Kivy APK
 
+name: CI
 on:
   push:
     branches: [ main ]
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-20.04
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
 
-      - name: Set up Python environment
-        uses: actions/setup-python@v4
+    uses: actions/checkout@v2
+
+
+      used to cache dependencies with a timeout
+
+    name: Get Date
+
+        id: get-date
+        run: |
+          echo "::set-output name=date::$(/bin/date -u "+%Y%m%d")"
+        shell: bash
+
+    name: Cache Buildozer global directory
+
+        uses: actions/cache@v2
         with:
-          python-version: '3.8'
+          path: .buildozer_global
+          key: buildozer-global-${{ hashFiles('buildozer.spec') }} # Replace with your path
 
-      - name: Install Buildozer and dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install buildozer cython
-          sudo apt-get update
-          sudo apt-get install -y \
-            git zip unzip openjdk-11-jdk curl \
-            libffi-dev libssl-dev \
-            python3-dev python3-pip \
-            lib32z1 lib32ncurses6 libbz2-1.0 libstdc++6
+    uses: actions/cache@v2
 
-      - name: Install Android SDK and Tools
-        run: |
-          mkdir -p $HOME/android-sdk/cmdline-tools
-          cd $HOME/android-sdk/cmdline-tools
-
-          curl -sSL https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -o cmdline-tools.zip
-          unzip cmdline-tools.zip
-          mv cmdline-tools latest
-          rm cmdline-tools.zip
-
-          export ANDROID_SDK_ROOT=$HOME/android-sdk
-          yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses || true
-
-          $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager \
-            "platform-tools" \
-            "build-tools;33.0.0" \
-            "build-tools;36.0.0-rc3" \
-            "platforms;android-33"
-
-      - name: Accept Android SDK Licenses
-        run: |
-          mkdir -p $HOME/android-sdk/licenses
-          echo -e "24333f8a63b6825ea9c5514f83c2829b004d1fee" > $HOME/android-sdk/licenses/android-sdk-license
-          echo -e "84831b9409646a918e30573bab4c9c91346d8abd" > $HOME/android-sdk/licenses/android-sdk-preview-license
-
-      - name: Debug Build-Tools Folder
-        run: ls -l $HOME/android-sdk/build-tools
-
-      - name: Build APK
-        run: |
-          export ANDROIDSDK=$HOME/android-sdk
-          export PATH=$ANDROIDSDK/platform-tools:$ANDROIDSDK/build-tools/33.0.0:$PATH
-          buildozer -v android debug
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
         with:
-          name: apk
-          path: ./bin/*.apk
+          path: .buildozer
+          key: ${{ runner.os }}-${{ steps.get-date.outputs.date }}-${{ hashFiles('buildozer.spec') }}
+
+    name: Build with Buildozer
+
+        uses: ArtemSBulgakov/buildozer-action@v1
+        id: buildozer
+        with:
+          command: buildozer android debug
+          buildozer_version: stable
+
+    name: Upload artifacts
+
+        uses: actions/upload-artifact@v2
+        with:
+          name: package
+          path: ${{ steps.buildozer.outputs.filename }}
