@@ -12,22 +12,6 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v2
 
-      - name: Get Date
-        id: get-date
-        run: echo "::set-output name=date::$(/bin/date -u '+%Y%m%d')"
-
-      - name: Cache Buildozer Global Directory
-        uses: actions/cache@v3
-        with:
-          path: ~/.buildozer_global
-          key: buildozer-global-${{ hashFiles('buildozer.spec') }}
-
-      - name: Cache Buildozer Directory
-        uses: actions/cache@v3
-        with:
-          path: .buildozer
-          key: ${{ runner.os }}-${{ steps.get-date.outputs.date }}-${{ hashFiles('buildozer.spec') }}
-
       - name: Install Dependencies
         run: |
           sudo apt-get update
@@ -56,11 +40,16 @@ jobs:
             "build-tools;33.0.0" \
             "platforms;android-33"
 
+      - name: Set Environment Variables
+        run: |
+          export ANDROID_SDK_ROOT=$HOME/android-sdk
+          export PATH=$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/platform-tools:$ANDROID_SDK_ROOT/build-tools/33.0.0:$PATH
+
       - name: Build with Buildozer
         uses: ArtemSBulgakov/buildozer-action@v1
         id: buildozer
         with:
-          command: android debug
+          command: -v android debug
           buildozer_version: stable
 
       - name: Upload Artifacts
