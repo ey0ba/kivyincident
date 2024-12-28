@@ -10,7 +10,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install Android SDK
+      - name: Install Android SDK and Tools
         run: |
           mkdir -p $HOME/android-sdk/cmdline-tools
           cd $HOME/android-sdk/cmdline-tools
@@ -21,35 +21,29 @@ jobs:
           mv cmdline-tools latest
           rm cmdline-tools.zip
 
-          # Set up environment variable for SDK
+          # Set SDK root
           export ANDROID_SDK_ROOT=$HOME/android-sdk
 
-          # Accept licenses and install required tools
+          # Accept licenses
           yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses
+
+          # Install platform tools, build-tools, and platforms
           $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager \
             "platform-tools" \
             "build-tools;33.0.0" \
             "platforms;android-33"
 
-          # Verify aidl is installed
-          if [ ! -f "$HOME/android-sdk/build-tools/33.0.0/aidl" ]; then
-            echo "Error: aidl not installed"
+          # Ensure build-tools/33.0.0/aidl exists
+          if [ ! -f "$ANDROID_SDK_ROOT/build-tools/33.0.0/aidl" ]; then
+            echo "Error: aidl is missing in build-tools"
             exit 1
           fi
 
-        env:
-          ANDROID_SDK_ROOT: $HOME/android-sdk
+      - name: Build APK with Hardcoded Paths
+        run: |
+          export ANDROIDSDK=$HOME/android-sdk
+          export PATH=$ANDROIDSDK/platform-tools:$ANDROIDSDK/build-tools/33.0.0:$PATH
+          buildozer -v android debug
 
-      - name: Build APK
-        uses: digreatbrian/buildozer-action@v2
-        with:
-          python-version: 3.8
-          buildozer-cmd: buildozer -v android debug
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: package
-          path: ./bin/*.apk
 
 
