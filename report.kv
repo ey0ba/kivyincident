@@ -1,0 +1,167 @@
+<ReportIncidentScreen>:
+    ScrollView:
+        do_scroll_x: False  # Disable horizontal scrolling
+        do_scroll_y: True   # Enable vertical scrolling
+
+        BoxLayout:
+            orientation: "vertical"
+            size_hint_y: None  # Enable scrolling by allowing the height to exceed the screen
+            height: self.minimum_height  # Adjust height based on the content
+            padding: dp(20)
+            spacing: dp(10)
+
+            # Title
+            Label:
+                text: "Report Incident"
+                font_size: dp(24)
+                bold: True
+                size_hint_y: None
+                height: dp(50)
+
+            # Incident Time
+            TextInput:
+                id: incident_time_input
+                hint_text: "Enter Incident Time (YYYY-MM-DD HH:MM:SS)"
+                multiline: False
+                size_hint_y: None
+                height: dp(50)
+
+            # Age
+            TextInput:
+                id: age_input
+                hint_text: "Enter Age"
+                multiline: False
+                size_hint_y: None
+                height: dp(50)
+
+            # Dropdowns and Inputs
+            Spinner:
+                id: sex_dropdown
+                text: "Select Sex"
+                values: []
+                size_hint_y: None
+                height: dp(50)
+
+            Spinner:
+                id: department_dropdown
+                text: "Select Department"
+                values: []
+                size_hint_y: None
+                height: dp(50)
+
+            Spinner:
+                id: suspected_cause_dropdown
+                text: "Select Suspected Cause"
+                values: []
+                size_hint_y: None
+                height: dp(50)
+
+            TextInput:
+                id: cause_other_input
+                hint_text: "Other Cause Description"
+                multiline: False
+                size_hint_y: None
+                height: dp(50)
+
+            Spinner:
+                id: contributing_factor_dropdown
+                text: "Select Contributing Factor"
+                values: []
+                size_hint_y: None
+                height: dp(50)
+
+            TextInput:
+                id: contributing_factor_other_input
+                hint_text: "Other Contributing Factor"
+                multiline: False
+                size_hint_y: None
+                height: dp(50)
+
+            Spinner:
+                id: mitigating_factor_dropdown
+                text: "Select Mitigating Factor"
+                values: []
+                size_hint_y: None
+                height: dp(50)
+
+            TextInput:
+                id: mitigating_factor_other_input
+                hint_text: "Other Mitigating Factor"
+                multiline: False
+                size_hint_y: None
+                height: dp(50)
+
+            Spinner:
+                id: incident_type_dropdown
+                text: "Select Incident Type"
+                values: []
+                size_hint_y: None
+                height: dp(50)
+
+            Spinner:
+                id: incident_outcome_dropdown
+                text: "Select Incident Outcome"
+                values: []
+                size_hint_y: None
+                height: dp(50)
+
+            Spinner:
+                id: resulting_action_dropdown
+                text: "Select Resulting Action"
+                values: []
+                size_hint_y: None
+                height: dp(50)
+
+            # Reporter Information
+            TextInput:
+                id: reporter_name_input
+                hint_text: "Reporter Name"
+                multiline: False
+                size_hint_y: None
+                height: dp(50)
+
+            Spinner:
+                id: reporter_role_dropdown
+                text: "Select Reporter Role"
+                values: []
+                size_hint_y: None
+                height: dp(50)
+
+            Spinner:
+                id: reporter_department_dropdown
+                text: "Select Reporter Department"
+                values: []
+                size_hint_y: None
+                height: dp(50)
+
+            # Other Opinions
+            TextInput:
+                id: other_opinions_input
+                hint_text: "Other Opinions"
+                multiline: True
+                size_hint_y: None
+                height: dp(100)
+
+            # Message Label for Feedback
+            Label:
+                id: message_label
+                text: ""
+                color: (0, 1, 0, 1)  # Green for success messages
+                size_hint_y: None
+                height: dp(30)
+                halign: "center"
+                valign: "middle"
+                text_size: self.size
+
+            # Buttons
+            Button:
+                text: "Submit"
+                size_hint_y: None
+                height: dp(50)
+                on_press: root.submit_incident()
+
+            Button:
+                text: "Back"
+                size_hint_y: None
+                height: dp(50)
+                on_press: app.root.current = "home"

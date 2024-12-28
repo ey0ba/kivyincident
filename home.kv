@@ -1,0 +1,46 @@
+<HomeScreen>:
+    BoxLayout:
+        orientation: "vertical"
+        padding: 20
+        spacing: 10
+
+        # Header Section
+        BoxLayout:
+            size_hint_y: None
+            height: 50
+            padding: 10
+            orientation: "horizontal"
+
+            Label:
+                text: "Home"
+                font_size: 20
+                halign: "left"
+
+            Button:
+                text: "Logout"
+                size_hint_x: None
+                width: 100
+                on_press: root.logout()
+
+        # Welcome Message
+
+        BoxLayout:
+            orientation: "vertical"
+            Label:
+                id: username_label
+                text: "Welcome!"
+                size_hint_y: None
+                height: dp(40)
+        
+
+        # Main Content Section
+        BoxLayout:
+            orientation: "vertical"
+            spacing: 20
+            padding: 50
+
+            Button:
+                text: "Report Incident"
+                size_hint_y: None
+                height: 50
+                on_press: app.root.current = "report"

@@ -1,0 +1,31 @@
+<LoginScreen>:
+    BoxLayout:
+        orientation: "vertical"
+        padding: 20
+        spacing: 10
+
+        Label:
+            text: "Login"
+            font_size: 32
+
+        TextInput:
+            id: username_input
+            hint_text: "Enter your username"
+            multiline: False
+
+        TextInput:
+            id: password_input
+            hint_text: "Enter your password"
+            password: True
+            multiline: False
+
+        Button:
+            text: "Login"
+            size_hint_y: None
+            height: 50
+            on_press: root.login()
+
+        Label:
+            id: message_label
+            text: ""
+            color: (1, 0, 0, 1)  # Red for error messages
