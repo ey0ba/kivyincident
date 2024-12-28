@@ -16,7 +16,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: 3.8  # Make sure this is compatible with your project
+        python-version: 3.8  # Make sure this is compatible with your project.
 
     - name: Install Buildozer and dependencies
       run: |
