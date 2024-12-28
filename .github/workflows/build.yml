@@ -36,16 +36,16 @@ jobs:
 
     - name: Set up Android SDK/NDK
       run: |
-        # Create the necessary directories
-        mkdir -p $HOME/android-sdk/cmdline-tools/latest
+        # Create necessary directories
+        mkdir -p $HOME/android-sdk/cmdline-tools
         
         # Download and unzip the SDK command-line tools
-        curl -s https://dl.google.com/android/repository/commandlinetools-linux-7583922_latest.zip -o cmdline-tools.zip
-        unzip cmdline-tools.zip -d $HOME/android-sdk/cmdline-tools/latest
+        curl -s https://dl.google.com/android/repository/commandlinetools-linux-8512546_latest.zip -o cmdline-tools.zip
+        unzip cmdline-tools.zip -d $HOME/android-sdk/cmdline-tools/
         
         # Accept the licenses and install necessary components
-        yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses
-        $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk "platform-tools" "build-tools;29.0.2" "platforms;android-29" "aidl"
+        yes | $HOME/android-sdk/cmdline-tools/tools/bin/sdkmanager --licenses
+        $HOME/android-sdk/cmdline-tools/tools/bin/sdkmanager --sdk_root=$HOME/android-sdk "platform-tools" "build-tools;29.0.2" "platforms;android-29" "aidl"
 
     - name: Build APK with Buildozer
       run: |
@@ -58,4 +58,5 @@ jobs:
       with:
         name: android-apk
         path: ./bin/*.apk  # Make sure this matches the actual APK output path
+
 
