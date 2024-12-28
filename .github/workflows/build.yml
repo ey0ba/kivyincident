@@ -21,12 +21,21 @@ jobs:
           mv cmdline-tools latest
           rm cmdline-tools.zip
 
-          # Accept licenses and install required SDK components
+          # Set up environment variable for SDK
+          export ANDROID_SDK_ROOT=$HOME/android-sdk
+
+          # Accept licenses and install required tools
           yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses
           $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager \
             "platform-tools" \
             "build-tools;33.0.0" \
             "platforms;android-33"
+
+          # Verify aidl is installed
+          if [ ! -f "$HOME/android-sdk/build-tools/33.0.0/aidl" ]; then
+            echo "Error: aidl not installed"
+            exit 1
+          fi
 
         env:
           ANDROID_SDK_ROOT: $HOME/android-sdk
@@ -42,6 +51,5 @@ jobs:
         with:
           name: package
           path: ./bin/*.apk
-
 
 
